@@ -24,7 +24,7 @@ int main(){
     // Make File
     FILE *fp;
     // Open File
-    fp = fopen("serverResults.txt", "w+");
+    fp = fopen("forkedResults.txt", "w+");
     
     // Socket Creation
     int socket_fd = socket(AF_INET, SOCK_STREAM, 0);

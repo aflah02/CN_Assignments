@@ -97,7 +97,7 @@ void * tFUN(void *args){
 int main(){
     pthread_t threads[10];
     // Open File
-    fD = fopen("concurrent.txt", "w+");
+    fD = fopen("threadedResults.txt", "w+");
     sem_init(&semaphore, 0, 1);
     // Server Socket
     struct sockaddr_in server_sockaddr_in;
