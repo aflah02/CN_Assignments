@@ -5,7 +5,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <inttypes.h>
-#include <poll.h>
+#include <sys/epoll.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <strings.h>
@@ -29,9 +29,19 @@ int main(){
         exit(1);
     }
 
-    struct pollfd pollFDs[11];
+    struct epoll_event epollEvents[10];
+    struct epoll_event event;
 
-    FILE *fp = fopen("PollResults.txt", "w+");
+    int epollFD = epoll_create(10);
+
+
+
+    if (epollFD < 0){
+        perror("Epoll Could Not be Created");
+        exit(1);
+    }
+
+    FILE *fp = fopen("EPollResults.txt", "w+");
 
     if (fp == NULL){
         perror("File Could Not be Opened");
@@ -59,10 +69,15 @@ int main(){
 
     printf("Server is Listening...\n");
 
-    int maxFDs = 1;
+    int maxFDs = 10;
 
-    pollFDs[0].fd = mainSocket;
-    pollFDs[0].events = POLLIN;
+    event.events = EPOLLIN;
+    event.data.fd = mainSocket;
+
+    if (epoll_ctl(epollFD, EPOLL_CTL_ADD, mainSocket, &event) < 0){
+        perror("Epoll Control Failed");
+        exit(1);
+    }
 
     struct sockaddr_in clientData;
     socklen_t clientDataLength = sizeof(clientData);
@@ -74,16 +89,16 @@ int main(){
         //     break;
         // }
 
-        int pollResponse = poll(pollFDs, maxFDs, -1);
+        int epollResponse = epoll_wait(epollFD, epollEvents, maxFDs, -1);
 
-        if (pollResponse < 0){
-            perror("Poll Failed");
+        if (epollResponse < 0){
+            perror("Epoll Wait Failed");
             exit(1);
         }
 
-        for (int i = 0; i < maxFDs; i++){
-            if (pollFDs[i].revents & POLLIN){
-                if (pollFDs[i].fd == mainSocket){
+        for (int i = 0; i < epollResponse; i++){
+            if (epollEvents[i].events & EPOLLIN){
+                if (epollEvents[i].data.fd == mainSocket){
                     int newConnection = accept(mainSocket, (struct sockaddr*)&clientData, &clientDataLength);
 
                     if (newConnection < 0){
@@ -91,14 +106,18 @@ int main(){
                         exit(1);
                     }
                     printf("Accepted\n");
-                    pollFDs[maxFDs].fd = newConnection;
-                    pollFDs[maxFDs].events = POLLIN;
-                    maxFDs++;
+                    event.events = EPOLLIN;
+                    event.data.fd = newConnection;
+
+                    if (epoll_ctl(epollFD, EPOLL_CTL_ADD, newConnection, &event) < 0){
+                        perror("Epoll Control Failed");
+                        exit(1);
+                    }
                 }
                 else{
                     char recieving_buffer[1000];
                     bzero(recieving_buffer, 1000);
-                    int readResponse = read(pollFDs[i].fd, recieving_buffer, 1000);
+                    int readResponse = read(epollEvents[i].data.fd, recieving_buffer, 1000);
 
                     if (readResponse < 0){
                         perror("Read Failed");
@@ -106,9 +125,11 @@ int main(){
                     }
                     if(readResponse==0){
                         // FD_CLR(i, &allFDs);
-                        pollFDs[i].fd = -1;
-                        close(pollFDs[i].fd);                   
-                        continue;
+                        if (epoll_ctl(epollFD, EPOLL_CTL_DEL, epollEvents[i].data.fd, &event) < 0){
+                            perror("Epoll Control Failed");
+                            exit(1);
+                        }
+                        close(epollEvents[i].data.fd);
                     }
                     else{
                         int value_recieved = atoi(recieving_buffer);
@@ -125,7 +146,7 @@ int main(){
 
                         // send(i, sending_buffer, 1000, 0);
                         
-                        getpeername(i, (struct sockaddr*)&clientData, &clientDataLength);
+                        getpeername(epollEvents[i].data.fd, (struct sockaddr*)&clientData, &clientDataLength);
                         
                         printf("Client IP Address: %s, Port: %d, Value: %d, Factorial: %lld\n", inet_ntoa(clientData.sin_addr), ntohs(clientData.sin_port), value_recieved, factorial);
 
@@ -136,7 +157,7 @@ int main(){
                         fflush(fp);
 
                         snprintf(sending_buffer, 1000, "%lld", factorial);
-                        send(pollFDs[i].fd, sending_buffer, 1000, 0);
+                        send(epollEvents[i].data.fd, sending_buffer, 1000, 0);
     
                     }
                 }
