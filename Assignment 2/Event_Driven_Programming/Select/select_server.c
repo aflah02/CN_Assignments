@@ -19,6 +19,12 @@ long long int computeFactorial(int n)
 }
 
 int main(){
+    FILE *fp = fopen("SelectResults.txt", "w+");
+
+    if (fp == NULL){
+        perror("File Could Not be Opened");
+        exit(1);
+    }
 
     int numberOfConnections = 0;
 
@@ -26,13 +32,6 @@ int main(){
 
     if (mainSocket < 0){
         perror("Main Socket Could Not be Created");
-        exit(1);
-    }
-
-    FILE *fp = fopen("SelectResults.txt", "w+");
-
-    if (fp == NULL){
-        perror("File Could Not be Opened");
         exit(1);
     }
 
@@ -81,20 +80,10 @@ int main(){
             perror("Select Failed");
             exit(1);
         }
-
+        
         for (int i = 0; i < FD_SETSIZE; i++){
             if (FD_ISSET(i, &constantlyUpdatedFDs)){
-                if (i == mainSocket){
-                    int newConnection = accept(mainSocket, (struct sockaddr*)&clientData, &clientDataLength);
-
-                    if (newConnection < 0){
-                        perror("Accept Failed");
-                        exit(1);
-                    }
-
-                    FD_SET(newConnection, &allFDs);
-                }
-                else{
+                if (i != mainSocket){
                     char recieving_buffer[1000];
                     bzero(recieving_buffer, 1000);
                     int readResponse = read(i, recieving_buffer, 1000);
@@ -127,6 +116,16 @@ int main(){
                         send(i, sending_buffer, 1000, 0);
     
                     }
+                }
+                else{
+                    int newConnection = accept(mainSocket, (struct sockaddr*)&clientData, &clientDataLength);
+
+                    if (newConnection < 0){
+                        perror("Accept Failed");
+                        exit(1);
+                    }
+
+                    FD_SET(newConnection, &allFDs);
                 }
             }
         }

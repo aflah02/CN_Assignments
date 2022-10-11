@@ -11,19 +11,22 @@
 #include <unistd.h> 
 
 int main(){
-    // Client Socket
-    int client_socket_fd = socket(AF_INET, SOCK_STREAM, 0);
-
-    if (client_socket_fd == -1){
-        printf("Failed to Create Client Socket");
-        exit(0);
-    }
+    // String Address
+    char *address = "127.0.0.1";
 
     // Server Socket
     struct sockaddr_in server_sockaddr_in;
     server_sockaddr_in.sin_family = AF_INET;
     server_sockaddr_in.sin_port = htons(8080);
-    server_sockaddr_in.sin_addr.s_addr = inet_addr("127.0.0.1");
+    server_sockaddr_in.sin_addr.s_addr = inet_addr(address);
+
+    // Client Socket
+    int client_socket_fd = socket(AF_INET, SOCK_STREAM, 0);
+
+    if (client_socket_fd < 0){
+        perror("Failed to Create Client Socket");
+        exit(0);
+    }
 
     // Connect to Server
     int connect_response = connect(client_socket_fd, (struct sockaddr*)&server_sockaddr_in, sizeof(server_sockaddr_in));
