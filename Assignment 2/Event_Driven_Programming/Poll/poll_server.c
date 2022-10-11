@@ -10,13 +10,7 @@
 #include <sys/types.h>
 #include <strings.h>
 
-long long int computeFactorial(int n)
-{
-    long long int fact = 1;
-    for (int i = 1; i <= n; i++)
-        fact *= i;
-    return fact;
-}
+long long int computeFactorial(int n);
 
 int main(){
 
@@ -78,19 +72,7 @@ int main(){
 
         for (int i = 0; i < maxFDs; i++){
             if (pollFDs[i].revents & POLLIN){
-                if (pollFDs[i].fd == mainSocket){
-                    int newConnection = accept(mainSocket, (struct sockaddr*)&clientData, &clientDataLength);
-
-                    if (newConnection < 0){
-                        perror("Accept Failed");
-                        exit(1);
-                    }
-                    printf("Accepted\n");
-                    pollFDs[maxFDs].fd = newConnection;
-                    pollFDs[maxFDs].events = POLLIN;
-                    maxFDs++;
-                }
-                else{
+                if (pollFDs[i].fd != mainSocket){
                     char recieving_buffer[1000];
                     bzero(recieving_buffer, 1000);
                     int readResponse = read(pollFDs[i].fd, recieving_buffer, 1000);
@@ -124,6 +106,18 @@ int main(){
     
                     }
                 }
+                else{
+                    int newConnection = accept(mainSocket, (struct sockaddr*)&clientData, &clientDataLength);
+
+                    if (newConnection < 0){
+                        perror("Accept Failed");
+                        exit(1);
+                    }
+                    printf("Accepted\n");
+                    pollFDs[maxFDs].fd = newConnection;
+                    pollFDs[maxFDs].events = POLLIN;
+                    maxFDs++;
+                }
             }
         }
     }
@@ -131,4 +125,12 @@ int main(){
     fclose(fp);
     close(mainSocket);
     return 0;
+}
+
+long long int computeFactorial(int n)
+{
+    long long int fact = 1;
+    for (int i = 1; i <= n; i++)
+        fact *= i;
+    return fact;
 }
