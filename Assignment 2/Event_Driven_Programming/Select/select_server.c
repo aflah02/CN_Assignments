@@ -10,13 +10,7 @@
 #include <sys/types.h>
 #include <strings.h>
 
-long long int computeFactorial(int n)
-{
-    long long int fact = 1;
-    for (int i = 1; i <= n; i++)
-        fact *= i;
-    return fact;
-}
+long long int computeFactorial(int n);
 
 int main(){
     FILE *fp = fopen("SelectResults.txt", "w+");
@@ -134,4 +128,12 @@ int main(){
     fclose(fp);
     close(mainSocket);
     return 0;
+}
+
+long long int computeFactorial(int n)
+{
+    long long int fact = 1;
+    for (int i = 1; i <= n; i++)
+        fact *= i;
+    return fact;
 }
