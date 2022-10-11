@@ -7,8 +7,8 @@
 #include <sys/types.h>
 #include <arpa/inet.h>
 #include <inttypes.h>
-#include <fcntl.h> // for open
-#include <unistd.h> // for close
+#include <fcntl.h> 
+#include <unistd.h> 
 
 int main(){
     // Client Socket

@@ -8,7 +8,7 @@
 #include <pthread.h>
 #include <semaphore.h>
 
-void *tFun(void *arg){
+void *threadFunctionToHandleServer(void *arg){
 
     int client_socket_fd = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -18,7 +18,6 @@ void *tFun(void *arg){
     }
 
     // Server Socket
-    
     struct sockaddr_in server_sockaddr_in;
     
     server_sockaddr_in.sin_family = AF_INET;
@@ -62,12 +61,20 @@ void *tFun(void *arg){
 
 int main(){
 
-    pthread_t clients[10];
-    for(int i=0;i<10;i++){
-        pthread_create(&clients[i],NULL,tFun,&i);
+    pthread_t clientThreadArray[10];
+
+    int t = 0;
+
+    while (t<10){
+        pthread_create(&clientThreadArray[t], NULL, threadFunctionToHandleServer, NULL);
+        t++;
     }
-    for(int i=0;i<10;i++){
-        pthread_join(clients[i],NULL);
+
+    t = 0;
+
+    while (t<10){
+        pthread_join(clientThreadArray[t], NULL);
+        t++;
     }
     
     return 0;

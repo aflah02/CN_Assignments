@@ -30,7 +30,7 @@ long long int computeFactorial(int n)
     return fact;
 }
 
-void * tFUN(void *args){
+void * threadFunctionToHandleClient(void *args){
     struct threadData *data = (struct threadData *)args;
     int client_socket_fd = data->client_socket_fd;
     struct sockaddr_in client_sockaddr_in = data->client_sockaddr_in;
@@ -46,7 +46,7 @@ void * tFUN(void *args){
         // Compute Factorial
         int number = atoi(buffer);
         long long int result = computeFactorial(number);
-        // printf("result: %lld \n", result);
+
         // Write
         char message[1000];
         snprintf(message, 1000, "%lld", result);
@@ -67,20 +67,12 @@ void * tFUN(void *args){
 
         // Write to File
         char write_buffer_for_file[1000];
-        // sprintf(write_buffer_for_file, "Client IP is - %s, Client Port is - %d, Client Sent Number - %d, Factorial of Number is - %lld \n", client_ip, client_port, number, result);  
         snprintf(write_buffer_for_file, 1000, "Client IP is - %s, Client Port is - %d, Client Sent Number - %d, Factorial of Number is - %lld \n", client_ip, client_port, number, result);     
         printf("Writing to File: %s \n", write_buffer_for_file);
         fprintf(fD,"%s",write_buffer_for_file);
 
         
         sem_post(&semaphore);
-
-        // // Write to Client
-        // char write_buffer_for_client[1000];
-        // // sprintf(write_buffer_for_client, "Factorial is %lld \n", result);
-        // snprintf(write_buffer_for_client, 1000, "Factorial is %lld \n", result);
-        // printf("Writing to Client: %s \n", write_buffer_for_client);
-        // write(client_socket_fd, write_buffer_for_client, sizeof(write_buffer_for_client));
     }
 
     // Close Socket
@@ -95,10 +87,18 @@ void * tFUN(void *args){
 }
 
 int main(){
-    pthread_t threads[10];
+    pthread_t threadArray[10];
+
     // Open File
     fD = fopen("threadedResults.txt", "w+");
+
+    if (fD == NULL){
+        printf("Failed to Open File");
+        exit(0);
+    }
+
     sem_init(&semaphore, 0, 1);
+
     // Server Socket
     struct sockaddr_in server_sockaddr_in;
     server_sockaddr_in.sin_family = AF_INET;
@@ -134,12 +134,16 @@ int main(){
     printf("Server is Listening...\n");
 
     int i = 1;
+
     while (i <= 10){
+
         struct sockaddr_in client_sockaddr_in;
         socklen_t client_sockaddr_in_length = sizeof(client_sockaddr_in);
 
         // Accept Client Socket
+
         int client_socket_fd = accept(server_socket_fd, (struct sockaddr*)&client_sockaddr_in, &client_sockaddr_in_length);
+
         struct threadData *data = (struct threadData*)malloc(sizeof(struct threadData));
         data->client_socket_fd = client_socket_fd;
         data->client_sockaddr_in = client_sockaddr_in;
@@ -152,18 +156,22 @@ int main(){
 
         // Create Thread and run on it
 
-        pthread_create(&threads[i],NULL,tFUN,(void*)data);
+        pthread_create(&threadArray[i],NULL,threadFunctionToHandleClient,(void*)data);
 
         i++;
     }
 
-    // Join Threads
-    for (int i = 1; i <= 10; i++){
-        pthread_join(threads[i], NULL);
+    // Join threadArray
+
+    int t = 1;
+
+    while (t <= 10){
+        pthread_join(threadArray[t],NULL);
+        t++;
     }
 
-    // // Close Socket
-    // close(server_socket_fd);
+    // Close Socket
+    close(server_socket_fd);
 
     // Close File
     fclose(fD);

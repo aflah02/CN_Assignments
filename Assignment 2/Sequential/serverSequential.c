@@ -7,8 +7,8 @@
 #include <sys/types.h>
 #include <arpa/inet.h>
 #include <inttypes.h>
-#include <fcntl.h> // for open
-#include <unistd.h> // for close
+#include <fcntl.h> 
+#include <unistd.h> 
 
 long long int computeFactorial(int n)
 {
@@ -52,26 +52,30 @@ int main(){
     }
 
     printf("Server is Listening...\n");
+    
     int i = 0;
+
     printf("Waiting for Client to Connect \n");
-        struct sockaddr_in client_sockaddr_in;
-        socklen_t client_sockaddr_in_length = sizeof(client_sockaddr_in);
+
+    struct sockaddr_in client_sockaddr_in;
+    socklen_t client_sockaddr_in_length = sizeof(client_sockaddr_in);
+
     int client_socket_fd = accept(socket_fd, (struct sockaddr*)&client_sockaddr_in, &client_sockaddr_in_length);
+
     if (client_socket_fd < 0){
         printf("Failed to Accept Client Socket");
         exit(0);
     }
         
+    int client_port = ntohs(client_sockaddr_in.sin_port);
+    printf("Client Port: %d \n", client_port);
 
+    char client_ip[INET_ADDRSTRLEN];
+    inet_ntop(AF_INET, &(client_sockaddr_in.sin_addr), client_ip, INET_ADDRSTRLEN);
+    printf("Client IP: %s \n", client_ip);
     
-        int client_port = ntohs(client_sockaddr_in.sin_port);
-        printf("Client Port: %d \n", client_port);
+    fflush(stdout);
 
-        char client_ip[INET_ADDRSTRLEN];
-        inet_ntop(AF_INET, &(client_sockaddr_in.sin_addr), client_ip, INET_ADDRSTRLEN);
-        printf("Client IP: %s \n", client_ip);
-        
-        fflush(stdout);
     while (i < 20){
 
         char read_buffer[100];
