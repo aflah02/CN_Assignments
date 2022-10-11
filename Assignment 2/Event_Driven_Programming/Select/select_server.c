@@ -29,12 +29,12 @@ int main(){
         exit(1);
     }
 
-    FILE *fp = fopen("SelectResults.txt", "w+");
+    // FILE *fp = fopen("SelectResults.txt", "w+");
 
-    if (fp == NULL){
-        perror("File Could Not be Opened");
-        exit(1);
-    }
+    // if (fp == NULL){
+    //     perror("File Could Not be Opened");
+    //     exit(1);
+    // }
 
     struct sockaddr_in serverAddress;
     serverAddress.sin_family = AF_INET;
@@ -130,9 +130,9 @@ int main(){
 
                         // Write to File
 
-                        fprintf(fp, "Client IP Address: %s, Port: %d, Value: %d, Factorial: %lld\n", inet_ntoa(clientData.sin_addr), ntohs(clientData.sin_port), value_recieved, factorial);
+                        // fprintf(fp, "Client IP Address: %s, Port: %d, Value: %d, Factorial: %lld\n", inet_ntoa(clientData.sin_addr), ntohs(clientData.sin_port), value_recieved, factorial);
 
-                        fflush(fp);
+                        // fflush(fp);
 
                         snprintf(sending_buffer, 1000, "%lld", factorial);
                         send(i, sending_buffer, 1000, 0);
@@ -143,7 +143,7 @@ int main(){
         }
     }
 
-    fclose(fp);
+    // fclose(fp);
     close(mainSocket);
     return 0;
 }

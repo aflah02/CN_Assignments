@@ -1,0 +1,57 @@
+top - 16:56:09 up 9 min,  0 users,  load average: 0.00, 0.01, 0.00
+Tasks:  12 total,   1 running,  11 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.0 us,  0.0 sy,  0.0 ni,100.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+MiB Mem :   7661.7 total,   7420.8 free,    118.9 used,    122.0 buff/cache
+MiB Swap:   2048.0 total,   2048.0 free,      0.0 used.   7353.6 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+    1 root      20   0    1804   1188   1104 S   0.0   0.0   0:00.04 init
+    7 root      20   0    1824     88      0 S   0.0   0.0   0:00.00 init
+    8 root      20   0    1824    104      0 S   0.0   0.0   0:00.10 init
+    9 aflah     20   0   10188   5344   3476 S   0.0   0.1   0:00.11 bash
+   10 root      20   0    1824     88      0 S   0.0   0.0   0:00.00 init
+   11 root      20   0    1824    104      0 S   0.0   0.0   0:00.22 init
+   12 aflah     20   0   10312   5404   3488 S   0.0   0.1   0:00.24 bash
+   55 root      20   0    1824     88      0 S   0.0   0.0   0:00.00 init
+   56 root      20   0    1824    104      0 S   0.0   0.0   0:00.02 init
+   57 aflah     20   0   10188   5336   3464 S   0.0   0.1   0:00.09 bash
+  330 aflah     20   0    2648    620    536 S   0.0   0.0   0:00.00 serverThreaded
+  331 aflah     20   0   10744   3648   3192 R   0.0   0.0   0:00.00 top
+
+top - 16:56:12 up 9 min,  0 users,  load average: 0.00, 0.01, 0.00
+Tasks:  11 total,   1 running,  10 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.1 us,  0.3 sy,  0.0 ni, 99.6 id,  0.0 wa,  0.0 hi,  0.1 si,  0.0 st
+MiB Mem :   7661.7 total,   7420.4 free,    119.3 used,    122.0 buff/cache
+MiB Swap:   2048.0 total,   2048.0 free,      0.0 used.   7353.2 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+   11 root      20   0    1824    104      0 S   0.7   0.0   0:00.24 init
+    8 root      20   0    1824    104      0 S   0.3   0.0   0:00.11 init
+    1 root      20   0    1804   1188   1104 S   0.0   0.0   0:00.04 init
+    7 root      20   0    1824     88      0 S   0.0   0.0   0:00.00 init
+    9 aflah     20   0   10188   5344   3476 S   0.0   0.1   0:00.11 bash
+   10 root      20   0    1824     88      0 S   0.0   0.0   0:00.00 init
+   12 aflah     20   0   10312   5404   3488 S   0.0   0.1   0:00.24 bash
+   55 root      20   0    1824     88      0 S   0.0   0.0   0:00.00 init
+   56 root      20   0    1824    104      0 S   0.0   0.0   0:00.02 init
+   57 aflah     20   0   10188   5336   3464 S   0.0   0.1   0:00.09 bash
+  331 aflah     20   0   10744   3648   3192 R   0.0   0.0   0:00.00 top
+
+top - 16:56:15 up 9 min,  0 users,  load average: 0.00, 0.01, 0.00
+Tasks:  11 total,   1 running,  10 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.0 us,  0.0 sy,  0.0 ni,100.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+MiB Mem :   7661.7 total,   7420.4 free,    119.3 used,    122.0 buff/cache
+MiB Swap:   2048.0 total,   2048.0 free,      0.0 used.   7353.2 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+    1 root      20   0    1804   1188   1104 S   0.0   0.0   0:00.04 init
+    7 root      20   0    1824     88      0 S   0.0   0.0   0:00.00 init
+    8 root      20   0    1824    104      0 S   0.0   0.0   0:00.11 init
+    9 aflah     20   0   10188   5344   3476 S   0.0   0.1   0:00.11 bash
+   10 root      20   0    1824     88      0 S   0.0   0.0   0:00.00 init
+   11 root      20   0    1824    104      0 S   0.0   0.0   0:00.24 init
+   12 aflah     20   0   10312   5404   3488 S   0.0   0.1   0:00.24 bash
+   55 root      20   0    1824     88      0 S   0.0   0.0   0:00.00 init
+   56 root      20   0    1824    104      0 S   0.0   0.0   0:00.02 init
+   57 aflah     20   0   10188   5336   3464 S   0.0   0.1   0:00.09 bash
+  331 aflah     20   0   10744   3648   3192 R   0.0   0.0   0:00.00 top
