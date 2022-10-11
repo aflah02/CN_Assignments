@@ -31,12 +31,12 @@ int main(){
 
     struct pollfd pollFDs[11];
 
-    // FILE *fp = fopen("PollResults.txt", "w+");
+    FILE *fp = fopen("PollResults.txt", "w+");
 
-    // if (fp == NULL){
-    //     perror("File Could Not be Opened");
-    //     exit(1);
-    // }
+    if (fp == NULL){
+        perror("File Could Not be Opened");
+        exit(1);
+    }
 
     struct sockaddr_in serverAddress;
     serverAddress.sin_family = AF_INET;
@@ -69,11 +69,6 @@ int main(){
     
     while(1){
 
-        // if (numberOfConnections == 10){
-        //     printf("10 Connections Reached. Server is Closing...\n");
-        //     break;
-        // }
-
         int pollResponse = poll(pollFDs, maxFDs, -1);
 
         if (pollResponse < 0){
@@ -105,25 +100,14 @@ int main(){
                         exit(1);
                     }
                     if(readResponse==0){
-                        // FD_CLR(i, &allFDs);
                         pollFDs[i].fd = -1;
                         close(pollFDs[i].fd);                   
                         continue;
                     }
                     else{
                         int value_recieved = atoi(recieving_buffer);
-                        // printf("Value Recieved: %d \n", value_recieved);
                         long long int factorial = computeFactorial(value_recieved);
                         char sending_buffer[1000];
-                        // sprintf(sending_buffer, "%lld", factorial);
-                        // int writeResponse = write(i, sending_buffer, 1000);
-
-                        // if (writeResponse < 0){
-                        //     perror("Write Failed");
-                        //     exit(1);
-                        // }
-
-                        // send(i, sending_buffer, 1000, 0);
                         
                         getpeername(i, (struct sockaddr*)&clientData, &clientDataLength);
                         
@@ -131,9 +115,9 @@ int main(){
 
                         // Write to File
 
-                        // fprintf(fp, "Client IP Address: %s, Port: %d, Value: %d, Factorial: %lld\n", inet_ntoa(clientData.sin_addr), ntohs(clientData.sin_port), value_recieved, factorial);
+                        fprintf(fp, "Client IP Address: %s, Port: %d, Value: %d, Factorial: %lld\n", inet_ntoa(clientData.sin_addr), ntohs(clientData.sin_port), value_recieved, factorial);
 
-                        // fflush(fp);
+                        fflush(fp);
 
                         snprintf(sending_buffer, 1000, "%lld", factorial);
                         send(pollFDs[i].fd, sending_buffer, 1000, 0);
@@ -144,7 +128,7 @@ int main(){
         }
     }
 
-    // fclose(fp);
+    fclose(fp);
     close(mainSocket);
     return 0;
 }

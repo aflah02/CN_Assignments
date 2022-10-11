@@ -14,7 +14,7 @@
 
 sem_t semaphore;
 
-// FILE *fD;
+FILE *fD;
 
 struct threadData{
     int client_socket_fd;
@@ -69,7 +69,7 @@ void * threadFunctionToHandleClient(void *args){
         char write_buffer_for_file[1000];
         snprintf(write_buffer_for_file, 1000, "Client IP is - %s, Client Port is - %d, Client Sent Number - %d, Factorial of Number is - %lld \n", client_ip, client_port, number, result);     
         printf("Writing to File: %s \n", write_buffer_for_file);
-        // fprintf(fD,"%s",write_buffer_for_file);
+        fprintf(fD,"%s",write_buffer_for_file);
 
         
         sem_post(&semaphore);
@@ -84,6 +84,19 @@ void * threadFunctionToHandleClient(void *args){
     }
 
     pthread_exit(NULL);
+}
+
+int main(){
+    pthread_t threadArray[10];
+
+    // Open File
+    fD = fopen("threadedResults.txt", "w+");
+
+    if (fD == NULL){
+        printf("Failed to Open File");
+        exit(0);
+    }
+
     sem_init(&semaphore, 0, 1);
 
     // Server Socket
@@ -161,7 +174,7 @@ void * threadFunctionToHandleClient(void *args){
     close(server_socket_fd);
 
     // Close File
-    // fclose(fD);
+    fclose(fD);
 
     // Delete Semaphore
     sem_destroy(&semaphore);

@@ -41,12 +41,12 @@ int main(){
         exit(1);
     }
 
-    // FILE *fp = fopen("EPollResults.txt", "w+");
+    FILE *fp = fopen("EPollResults.txt", "w+");
 
-    // if (fp == NULL){
-    //     perror("File Could Not be Opened");
-    //     exit(1);
-    // }
+    if (fp == NULL){
+        perror("File Could Not be Opened");
+        exit(1);
+    }
 
     struct sockaddr_in serverAddress;
     serverAddress.sin_family = AF_INET;
@@ -84,11 +84,6 @@ int main(){
     
     while(1){
 
-        // if (numberOfConnections == 10){
-        //     printf("10 Connections Reached. Server is Closing...\n");
-        //     break;
-        // }
-
         int epollResponse = epoll_wait(epollFD, epollEvents, maxFDs, -1);
 
         if (epollResponse < 0){
@@ -124,7 +119,6 @@ int main(){
                         exit(1);
                     }
                     if(readResponse==0){
-                        // FD_CLR(i, &allFDs);
                         if (epoll_ctl(epollFD, EPOLL_CTL_DEL, epollEvents[i].data.fd, &event) < 0){
                             perror("Epoll Control Failed");
                             exit(1);
@@ -133,18 +127,8 @@ int main(){
                     }
                     else{
                         int value_recieved = atoi(recieving_buffer);
-                        // printf("Value Recieved: %d \n", value_recieved);
                         long long int factorial = computeFactorial(value_recieved);
                         char sending_buffer[1000];
-                        // sprintf(sending_buffer, "%lld", factorial);
-                        // int writeResponse = write(i, sending_buffer, 1000);
-
-                        // if (writeResponse < 0){
-                        //     perror("Write Failed");
-                        //     exit(1);
-                        // }
-
-                        // send(i, sending_buffer, 1000, 0);
                         
                         getpeername(epollEvents[i].data.fd, (struct sockaddr*)&clientData, &clientDataLength);
                         
@@ -152,9 +136,9 @@ int main(){
 
                         // Write to File
 
-                        // fprintf(fp, "Client IP Address: %s, Port: %d, Value: %d, Factorial: %lld\n", inet_ntoa(clientData.sin_addr), ntohs(clientData.sin_port), value_recieved, factorial);
+                        fprintf(fp, "Client IP Address: %s, Port: %d, Value: %d, Factorial: %lld\n", inet_ntoa(clientData.sin_addr), ntohs(clientData.sin_port), value_recieved, factorial);
 
-                        // fflush(fp);
+                        fflush(fp);
 
                         snprintf(sending_buffer, 1000, "%lld", factorial);
                         send(epollEvents[i].data.fd, sending_buffer, 1000, 0);

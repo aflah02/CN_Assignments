@@ -23,9 +23,9 @@ int main(){
     struct sockaddr_in server_sockaddr_in;
 
     // Make File
-    // FILE *fp;
+    FILE *fp;
     // Open File
-    // fp = fopen("forkedResults.txt", "w+");
+    fp = fopen("forkedResults.txt", "w+");
     
     // Socket Creation
     int socket_fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -94,9 +94,9 @@ int main(){
                 printf("Result: %lld \n", result);
 
 
-                // sprintf(write_buffer_for_file, "Client IP is - %s, Client Port is - %d, Client Sent Number - %d, Factorial of Number is - %lld \n", client_ip, client_port, number, result);       
-                // printf("Writing to File: %s \n", write_buffer_for_file);
-                // fprintf(fp,"%s",write_buffer_for_file);
+                sprintf(write_buffer_for_file, "Client IP is - %s, Client Port is - %d, Client Sent Number - %d, Factorial of Number is - %lld \n", client_ip, client_port, number, result);       
+                printf("Writing to File: %s \n", write_buffer_for_file);
+                fprintf(fp,"%s",write_buffer_for_file);
 
 
                 sprintf(write_buffer_for_client, "Factorial is %lld \n", result);
@@ -107,7 +107,7 @@ int main(){
         }
     }
 
-    // fclose(fp);
+    fclose(fp);
     close(client_socket_fd);
 
     return 0;
