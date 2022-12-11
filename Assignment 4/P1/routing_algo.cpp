@@ -15,8 +15,16 @@ bool continue_condition(unordered_map<string, int>& djikstra_Dist_Tracker, strin
 }
 
 bool dj_update_condition(unordered_map<string, int>& djikstra_Dist_Tracker, string& edest, string& dest, string& currNode, int& cost){
-  if ((djikstra_Dist_Tracker.count(edest) == 0) || (djikstra_Dist_Tracker[dest] > djikstra_Dist_Tracker[currNode] + cost)) return true;
+  if ((djikstra_Dist_Tracker.count(edest) == 0)) return true;
+  if ((djikstra_Dist_Tracker[dest] > djikstra_Dist_Tracker[currNode] + cost)) return true;
   return false;
+}
+
+void dj_update(unordered_map<string, int>& djikstra_Dist_Tracker, unordered_map<string, string>& nexthop_tracker, unordered_map<string, string>& interface_nodeip_tracker, priority_queue<pair<int, string>, vector<pair<int, string>>, greater<pair<int, string>>>& pq, string& dest, string& currNode, int& cost){
+  djikstra_Dist_Tracker[dest] = djikstra_Dist_Tracker[currNode] + cost;
+  nexthop_tracker[dest] = nexthop_tracker[currNode];
+  interface_nodeip_tracker[dest] = interface_nodeip_tracker[currNode];
+  pq.push({djikstra_Dist_Tracker[dest], dest});
 }
 
 void RoutingNode::DJ_Algo(){
@@ -54,10 +62,7 @@ void RoutingNode::DJ_Algo(){
       string dest = edge.dst;
       int cost = edge.cost;
       if (dj_update_condition(djikstra_Dist_Tracker, edge.dst, dest, currNode, cost)){
-        djikstra_Dist_Tracker[dest] = djikstra_Dist_Tracker[currNode] + cost;
-        nexthop_tracker[dest] = nexthop_tracker[currNode];
-        interface_nodeip_tracker[dest] = interface_nodeip_tracker[currNode];
-        pq.push({djikstra_Dist_Tracker[dest], dest});
+        dj_update(djikstra_Dist_Tracker, nexthop_tracker, interface_nodeip_tracker, pq, dest, currNode, cost);
       }
     }
 
