@@ -10,16 +10,16 @@ using namespace std;
 
 void RoutingNode::DJ_Algo(){
   unordered_map<string, int> djikstra_Dist_Tracker;
-  unordered_map<string, string> nexthop;
-  unordered_map<string, string> interface_nodeip;
+  unordered_map<string, string> nexthop_tracker;
+  unordered_map<string, string> interface_nodeip_tracker;
 
   priority_queue<pair<int, string>, vector<pair<int, string>>, greater<pair<int, string>>> pq;
 
   for (int i = 0; i < neighbor_tbl.tbl.size(); i++){
     RoutingEntry entry = neighbor_tbl.tbl[i];
     djikstra_Dist_Tracker[entry.dstip] = entry.cost;
-    nexthop[entry.dstip] = entry.nexthop;
-    interface_nodeip[entry.dstip] = entry.ip_interface;
+    nexthop_tracker[entry.dstip] = entry.nexthop;
+    interface_nodeip_tracker[entry.dstip] = entry.ip_interface;
   }
 
   for (pair<NetInterface, Node*>& interface: interfaces){
@@ -27,8 +27,8 @@ void RoutingNode::DJ_Algo(){
     string dest = interface.first.getConnectedIp();
     int cost = interface.first.getCost();
     djikstra_Dist_Tracker[dest] = cost;
-    nexthop[dest] = dest;
-    interface_nodeip[dest] = src;
+    nexthop_tracker[dest] = dest;
+    interface_nodeip_tracker[dest] = src;
     pq.push({cost, dest});
   }
 
@@ -46,8 +46,8 @@ void RoutingNode::DJ_Algo(){
       int cost = edge.cost;
       if ((djikstra_Dist_Tracker.count(edge.dst) == 0) || (djikstra_Dist_Tracker[dest] > djikstra_Dist_Tracker[currNode] + cost)){
         djikstra_Dist_Tracker[dest] = djikstra_Dist_Tracker[currNode] + cost;
-        nexthop[dest] = nexthop[currNode];
-        interface_nodeip[dest] = interface_nodeip[currNode];
+        nexthop_tracker[dest] = nexthop_tracker[currNode];
+        interface_nodeip_tracker[dest] = interface_nodeip_tracker[currNode];
         pq.push({djikstra_Dist_Tracker[dest], dest});
       }
     }
@@ -57,9 +57,9 @@ void RoutingNode::DJ_Algo(){
     for (pair<string, int> p: djikstra_Dist_Tracker){
       RoutingEntry entry;
       entry.dstip = p.first;
-      entry.nexthop = nexthop[p.first];
+      entry.nexthop = nexthop_tracker[p.first];
       entry.cost = p.second;
-      entry.ip_interface = interface_nodeip[p.first];
+      entry.ip_interface = interface_nodeip_tracker[p.first];
       mytbl.tbl.push_back(entry);
     }
   }
@@ -153,6 +153,3 @@ void RoutingNode::recvMsg(RouteMsg *msg) {
     }
   }
 }
-
-
-
