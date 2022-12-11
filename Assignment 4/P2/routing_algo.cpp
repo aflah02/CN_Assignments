@@ -8,6 +8,17 @@
 
 using namespace std;
 
+bool continue_condition(unordered_map<string, int>& djikstra_Dist_Tracker, string& currNode, int& best_distance_from_pq, unordered_map<string, vector<Edge>>& adjList){
+  if (djikstra_Dist_Tracker[currNode] < best_distance_from_pq) return true;
+  if (adjList.count(currNode) == 0) return true;
+  return false;
+}
+
+bool dj_update_condition(unordered_map<string, int>& djikstra_Dist_Tracker, string& edest, string& dest, string& currNode, int& cost){
+  if ((djikstra_Dist_Tracker.count(edest) == 0) || (djikstra_Dist_Tracker[dest] > djikstra_Dist_Tracker[currNode] + cost)) return true;
+  return false;
+}
+
 void RoutingNode::DJ_Algo(){
   unordered_map<string, int> djikstra_Dist_Tracker;
   unordered_map<string, string> nexthop_tracker;
@@ -37,14 +48,12 @@ void RoutingNode::DJ_Algo(){
     string currNode = pq.top().second;
     pq.pop();
 
-    if (djikstra_Dist_Tracker[currNode] < best_distance_from_pq) continue;
-
-    if (adjList.count(currNode) == 0) continue;
+    if (continue_condition(djikstra_Dist_Tracker, currNode, best_distance_from_pq, adjList)) continue;
 
     for (Edge& edge: adjList[currNode]){
       string dest = edge.dst;
       int cost = edge.cost;
-      if ((djikstra_Dist_Tracker.count(edge.dst) == 0) || (djikstra_Dist_Tracker[dest] > djikstra_Dist_Tracker[currNode] + cost)){
+      if (dj_update_condition(djikstra_Dist_Tracker, edge.dst, dest, currNode, cost)){
         djikstra_Dist_Tracker[dest] = djikstra_Dist_Tracker[currNode] + cost;
         nexthop_tracker[dest] = nexthop_tracker[currNode];
         interface_nodeip_tracker[dest] = interface_nodeip_tracker[currNode];
@@ -62,6 +71,7 @@ void RoutingNode::DJ_Algo(){
       entry.ip_interface = interface_nodeip_tracker[p.first];
       mytbl.tbl.push_back(entry);
     }
+    
   }
 }
 
@@ -108,12 +118,12 @@ void RoutingNode::recvMsg(RouteMsg *msg) {
   vector<Edge> Nedges;
   vector<string> interface_ips_of_source;
   for (RoutingEntry r_entry: recvRoutingTable->tbl){
-    if (r_entry.dstip == r_entry.ip_interface){
-      interface_ips_of_source.push_back(r_entry.ip_interface);
-    }
-    else {
+    if (r_entry.dstip != r_entry.ip_interface){
       Edge edge(r_entry);
       Nedges.push_back(edge);
+    }
+    else {
+      interface_ips_of_source.push_back(r_entry.ip_interface);
     }
   }
 
