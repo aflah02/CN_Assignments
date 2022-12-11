@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "*.ejs": "html",
+        "array": "c",
+        "string_view": "c",
+        "initializer_list": "c",
+        "utility": "c",
+        "unordered_map": "cpp",
+        "queue": "cpp",
+        "vector": "cpp"
+    }
+}

@@ -16,7 +16,7 @@ void *threadFunctionToHandleServer(void *arg){
     struct sockaddr_in server_sockaddr_in;
     
     server_sockaddr_in.sin_family = AF_INET;
-    server_sockaddr_in.sin_port = htons(8080);
+    server_sockaddr_in.sin_port = htons(8070);
     server_sockaddr_in.sin_addr.s_addr = inet_addr(address);
 
 
